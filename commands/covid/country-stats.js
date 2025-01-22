@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const fetch = require('node-fetch');
 const emojiCharacters = require('../misc/emojicharacters');
 
@@ -9,13 +9,13 @@ module.exports = {
     run: async (client, message, args) => {
 
         if(!args[0]){
-            let embedsay = new MessageEmbed()
+            let embedsay = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Bir hata oluştu...')
                 .setDescription('Hangi ülke olduğunu söylemeyi unuttun sanırım!')
-                .addField('Ülke istatistiklerini görmek için!', "+ülke [Ülke İsimi]", true)
-                .setFooter(`${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, 'https://i.imgur.com/TQPun1u.jpg');
-            message.channel.send(embedsay);
+                .addFields({ name: 'Ülke istatistiklerini görmek için!', value: "+ülke [Ülke İsimi]", inline: true })
+                .setFooter({ text: `${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, iconURL: 'https://i.imgur.com/TQPun1u.jpg' });
+            message.channel.send({ embeds: [embedsay] });
         } else {
             let country_name = args.join(' ');
             (async () => {
@@ -34,28 +34,30 @@ module.exports = {
                     }
                 }
                 if(country_stat){
-                    let embedsay = new MessageEmbed()
-                        .setColor('RANDOM')
+                    let embedsay = new EmbedBuilder()
+                        .setColor('Random')
                         .setTitle(country_stat.country_name.toString())
                         .setThumbnail("https://i.imgur.com/TQPun1u.jpg")
                         .setDescription(country_stat.country_name.toString() + " de ki Covid-19 istatistikler")
-                        .addField(emojiCharacters.pensive + ' Toplam Vakalar', country_stat.cases.toString(), false)
-                        .addField(emojiCharacters.crying + ' Toplam Ölümler', country_stat.deaths.toString(), false)
-                        .addField(emojiCharacters.dancing_women + ' Toplam İyileşenler', country_stat.total_recovered.toString(), false)
-                        .addField(emojiCharacters.new + ' Yeni Vakalar', country_stat.new_cases.toString(), false)
-                        .addField(emojiCharacters.new + ' Yeni Ölümler', country_stat.new_deaths.toString(), false)
-                        .addField(emojiCharacters.sad + ' Ağır Vakalar', country_stat.serious_critical.toString(), false)
-                        .addField(emojiCharacters.mask + ' Aktif Vakalar', country_stat.active_cases.toString(), false)
-                        .setFooter(`${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, 'https://i.imgur.com/TQPun1u.jpg');
-                    message.channel.send(embedsay);
+                        .addFields(
+                            { name: emojiCharacters.pensive + ' Toplam Vakalar', value: country_stat.cases.toString(), inline: false },
+                            { name: emojiCharacters.crying + ' Toplam Ölümler', value: country_stat.deaths.toString(), inline: false },
+                            { name: emojiCharacters.dancing_women + ' Toplam İyileşenler', value: country_stat.total_recovered.toString(), inline: false },
+                            { name: emojiCharacters.new + ' Yeni Vakalar', value: country_stat.new_cases.toString(), inline: false },
+                            { name: emojiCharacters.new + ' Yeni Ölümler', value: country_stat.new_deaths.toString(), inline: false },
+                            { name: emojiCharacters.sad + ' Ağır Vakalar', value: country_stat.serious_critical.toString(), inline: false },
+                            { name: emojiCharacters.mask + ' Aktif Vakalar', value: country_stat.active_cases.toString(), inline: false }
+                        )
+                        .setFooter({ text: `${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, iconURL: 'https://i.imgur.com/TQPun1u.jpg' });
+                    message.channel.send({ embeds: [embedsay] });
                 }else{
-                    let embedsay = new MessageEmbed()
+                    let embedsay = new EmbedBuilder()
                         .setColor('#FF0000')
                         .setTitle('Bir hata oluştu...')
                         .setDescription('Bu ülkeyi bulamıyorum. Ülke isimlerini ingilizce olarak yazmayı deneyin!!!')
-                        .addField('`+ülke Fransa` yerine', "`+ülke France` yazmayı deneyin ", true)
-                        .setFooter(`${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, 'https://i.imgur.com/TQPun1u.jpg');
-                    message.channel.send(embedsay);   
+                        .addFields({ name: '`+ülke Fransa` yerine', value: "`+ülke France` yazmayı deneyin ", inline: true })
+                        .setFooter({ text: `${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, iconURL: 'https://i.imgur.com/TQPun1u.jpg' });
+                    message.channel.send({ embeds: [embedsay] });   
                 }
                 
             })();

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const fetch = require('node-fetch');
 const emojiCharacters = require('../misc/emojicharacters');
 
@@ -16,18 +16,20 @@ module.exports = {
             }
         });
         const content = await rawResponse.json();
-        let embedsay = new MessageEmbed()
-            .setColor('RANDOM')
+        let embedsay = new EmbedBuilder()
+            .setColor('Random')
             .setTitle('Dünya Genelindeki Covid-19 İstatistikleri')
             .setThumbnail("https://i.imgur.com/TQPun1u.jpg")
             .setDescription("İstatistikler; ölümler, vaka sayısı, vb. gösterir")
-            .addField(emojiCharacters.pensive + ' Toplam Vakalar', content.total_cases.toString(), false)
-            .addField(emojiCharacters.crying + ' Toplam Ölümler', content.total_deaths.toString(), false)
-            .addField(emojiCharacters.dancing_women + ' Toplam İyileşenler', content.total_recovered.toString(), false)
-            .addField(emojiCharacters.new + ' Yeni Vakalar', content.new_cases.toString(), false)
-            .addField(emojiCharacters.new + ' Yeni Ölümler', content.new_deaths.toString(), false)
-            .setFooter(`${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, 'https://i.imgur.com/TQPun1u.jpg');
-        message.channel.send(embedsay);
+            .addFields(
+                { name: emojiCharacters.pensive + ' Toplam Vakalar', value: content.total_cases.toString(), inline: false },
+                { name: emojiCharacters.crying + ' Toplam Ölümler', value: content.total_deaths.toString(), inline: false },
+                { name: emojiCharacters.dancing_women + ' Toplam İyileşenler', value: content.total_recovered.toString(), inline: false },
+                { name: emojiCharacters.new + ' Yeni Vakalar', value: content.new_cases.toString(), inline: false },
+                { name: emojiCharacters.new + ' Yeni Ölümler', value: content.new_deaths.toString(), inline: false }
+            )
+            .setFooter({ text: `${client.user.username} İstatistik | Powered by ${client.users.cache.get("384922905575686147").tag}`, iconURL: 'https://i.imgur.com/TQPun1u.jpg' });
+        message.channel.send({ embeds: [embedsay] });
 
     }
 }
